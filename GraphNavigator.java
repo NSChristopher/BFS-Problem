@@ -2,51 +2,86 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Stack;
+import java.util.concurrent.TimeUnit;
+
 import Models.Vertex;
 
 public class GraphNavigator {
 
     private ArrayList<Vertex> graph;
+    private Vertex dest;
+
+    private ArrayList<Integer> traversalPath = new ArrayList<>();
+
+    public GraphNavigator() {
+    }
+
+    // Ctor for building graph at instantiation.
+    public GraphNavigator(ArrayList<Integer> userArr) {
+        buildGraph(userArr);
+    }
 
     public void buildGraph(ArrayList<Integer> userArr){
         this.graph = new ArrayList<Vertex>();
-
-        ArrayList<Integer> edges = new ArrayList<>();
+        this.dest = new Vertex();
 
         for(int i = 0; i < userArr.size(); i++) {
-            edges.clear();
+            ArrayList<Integer> edges = new ArrayList<>();
             int value = userArr.get(i);
 
-            int firstEdge = i + value;
-            if(firstEdge < userArr.size()){
-                System.out.println(firstEdge);
-                edges.add(firstEdge);
+            if(value != 0) {
+                int firstEdge = i + value;
+                if(firstEdge < userArr.size()){
+                    edges.add(firstEdge);
+                }
+    
+                int secoundEdge = i - value;
+                if(secoundEdge >= 0){
+                    edges.add(secoundEdge);
+                }
+                graph.add(new Vertex(value, edges));
+            }
+            else {
+                graph.add(dest);
             }
 
-            int secoundEdge = i - value;
-            if(secoundEdge >= 0){
-                System.out.println(secoundEdge);
-                edges.add(secoundEdge);
-            }
-            graph.add(new Vertex(value, edges));
+            
         }
     }
 
-    public void visualDFS(Integer v){
+    // Used for testing
+    public void printGraph() {
+        for (int i = 0; i < graph.size(); i++) {
+            System.out.println(graph.get(i).getValue());
+            for (Integer u : graph.get(i).getEdges()) {
+                System.out.print(u);
+            }
+            System.out.println();
+        }
+    }
+
+    public void DFS(Integer v) {
+
+        if(!dest.isVisited()) {
+            traversalPath.add(v);
+            System.out.println(v);
+        }
 
         Vertex vertex = graph.get(v);
-
         vertex.isVisited(true);
-        System.out.print(v);
 
-        if (vertex.getValue() == 0){
-            System.out.println("Found " + vertex.getValue());
-            return;
-        }
         for (Integer u : vertex.getEdges()) {
             if(!graph.get(u).isVisited()) {
-                visualDFS(u);
+                DFS(u);
             }
         }
+    }
+
+    public ArrayList<Integer> getTraversalPath() {
+        return traversalPath;
+    }
+
+    public Boolean isSolved(){
+        return dest.isVisited();
     }
 }

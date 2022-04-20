@@ -7,7 +7,8 @@ public class Vertex {
     private ArrayList<Integer> edges;
 
     public Vertex() {
-        edges = new ArrayList<Integer>();
+        this.edges = new ArrayList<Integer>();
+        this.value = 0;
     }
 
     public Vertex(Integer value, ArrayList<Integer> edges) {
